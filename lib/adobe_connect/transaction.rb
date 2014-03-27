@@ -18,7 +18,11 @@ module AdobeConnect
     def self.find_by_meeting(sco_id, params = {}, service = AdobeConnect::Service.new)
       response = service.report_bulk_consolidated_transactions( params.merge(filter_sco_id: sco_id, type: 'meeting') )
       bulk_transactions = response.at_xpath('//report-bulk-consolidated-transactions')
-      transactions = bulk_transactions.children.map{|t| load_from_xml(t, service) }
+      if bulk_transactions.nil?
+        []
+      else
+        transactions = bulk_transactions.children.map{|t| load_from_xml(t, service) }
+      end
     end
 
     private
